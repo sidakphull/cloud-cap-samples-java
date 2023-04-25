@@ -1,0 +1,115 @@
+global:
+  domain: c-81ddb81.stage.kyma.ondemand.com
+  imagePullSecret:
+    name: tech-user-docker
+srv:
+  bindings:
+    auth:
+      serviceInstanceName: xsuaa
+    saas-registry:
+      serviceInstanceName: saas-registry
+    service-manager:
+      serviceInstanceName: service-manager
+  image:
+    repository: cap-dev.common.repositories.cloud.sap/sidak/mt/java/bookshop-srv
+    tag: latest
+  env:
+    SPRING_PROFILES_ACTIVE: cloud
+  resources:
+    limits:
+      ephemeral-storage: 1G
+      memory: 1G
+    requests:
+      ephemeral-storage: 1G
+      cpu: 1000m
+      memory: 1G
+  health:
+    liveness:
+      path: /
+    readiness:
+      path: /
+  envFrom:
+    - configMapRef:
+        name: "{{ .Release.Name }}-mtxs-configmap"
+sidecar:
+  bindings:
+    auth:
+      serviceInstanceName: xsuaa
+    service-manager:
+      serviceInstanceName: service-manager
+  image:
+    repository: cap-dev.common.repositories.cloud.sap/sidak/mt/java/bookshop-sidecar
+    tag: latest
+  resources:
+    limits:
+      ephemeral-storage: 1G
+      memory: 500M
+    requests:
+      ephemeral-storage: 1G
+      cpu: 500m
+      memory: 500M
+  health:
+    liveness:
+      path: /
+    readiness:
+      path: /
+approuter:
+  bindings:
+    auth:
+      serviceInstanceName: xsuaa
+  image:
+    repository: cap-dev.common.repositories.cloud.sap/sidak/mt/java/bookshop-approuter
+    tag: latest
+  resources:
+    limits:
+      ephemeral-storage: 1G
+      memory: 500M
+    requests:
+      ephemeral-storage: 1G
+      cpu: 500m
+      memory: 500M
+  health:
+    liveness:
+      path: /
+    readiness:
+      path: /
+  envFrom:
+    - configMapRef:
+        name: "{{ .Release.Name }}-approuter-configmap"
+xsuaa:
+  serviceOfferingName: xsuaa
+  servicePlanName: application
+  parameters:
+    xsappname: bookshop-sidak-dcom
+    tenant-mode: shared
+    oauth2-configuration:
+      redirect-uris:
+        - https://*.c-81ddb81.stage.kyma.ondemand.com/**
+service-manager:
+  serviceOfferingName: service-manager
+  servicePlanName: container
+saas-registry:
+  serviceOfferingName: saas-registry
+  servicePlanName: application
+  parametersFrom:
+    - secretKeyRef:
+        name: "{{ .Release.Name }}-saas-registry-secret"
+        key: parameters
+saasRegistryParameters:
+  xsappname: bookshop-sidak-dcom
+  appName: bookshop-sidak-dcom
+  displayName: bookshop-sidak-dcom
+  description: bookshop application
+  category: "CAP Application"
+  appUrls:
+    getDependencies: "/mt/v1.0/subscriptions/dependencies"
+    onSubscription: "/mt/v1.0/subscriptions/tenants/{tenantId}"
+    onSubscriptionAsync: true
+    onUnSubscriptionAsync: true
+    onUpdateDependenciesAsync: true
+    callbackTimeoutMillis: 300000
+backendDestinations:
+  backend:
+    service: srv
+  mtx-api:
+    service: srv
