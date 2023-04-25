@@ -36,5 +36,4 @@ hs_err*
 
 .cdsrc-private.json
 
-/chart/
 .reloadtrigger
