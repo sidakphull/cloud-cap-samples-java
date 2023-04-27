@@ -79,7 +79,7 @@ xsuaa:
   serviceOfferingName: xsuaa
   servicePlanName: application
   parameters:
-    xsappname: bookshop
+    xsappname: bookshop-sidak-dcom
     tenant-mode: shared
     oauth2-configuration:
       redirect-uris:
@@ -95,9 +95,9 @@ saas-registry:
         name: "{{ .Release.Name }}-saas-registry-secret"
         key: parameters
 saasRegistryParameters:
-  xsappname: bookshop
-  appName: bookshop
-  displayName: bookshop
+  xsappname: bookshop-sidak-dcom
+  appName: bookshop-sidak-dcom
+  displayName: bookshop-sidak-dcom
   description: bookshop application
   category: "CAP Application"
   appUrls:
