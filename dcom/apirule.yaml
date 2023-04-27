@@ -4,9 +4,9 @@ metadata:
   name: bookshop-java-subscriber
 spec:
   gateway: kyma-gateway.kyma-system.svc.cluster.local
-  host: cap-kyma-2-0-n9uo22n1-bookshop-java-approuter-sidak
+  host: cap-kyma-2-0-n9uo22n1-bookshop-sidak-dcom-approuter-sidak
   service:
-    name: bookshop-java-approuter
+    name: bookshop-sidak-dcom-approuter
     port: 8080
   rules:
       - accessStrategies:
